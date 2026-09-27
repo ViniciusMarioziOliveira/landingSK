@@ -1,122 +1,236 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="day">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Uma experiência editorial sobre I Want to Love You Till Your Dying Day: romance, inocência e guerra em um internato de fantasia sombria."
+      content="Um manuscrito iluminado sobre I Want to Love You Till Your Dying Day: romance, inocência e guerra em um antigo internato europeu."
     />
-    <meta name="theme-color" content="#e9e4da" />
+    <meta name="theme-color" content="#ebe0c8" />
     <title>I Want to Love You Till Your Dying Day</title>
+
+    <script>
+      /* Runs before paint: theme choice and the one-time "sealed doors" intro. */
+      (function () {
+        var d = document.documentElement;
+        d.classList.add("js");
+        var theme = null;
+        var seen = null;
+        try { theme = localStorage.getItem("kimi-theme"); } catch (e) {}
+        try { seen = sessionStorage.getItem("kimi-portal"); } catch (e) {}
+        if (theme === "night" || theme === "day") d.setAttribute("data-theme", theme);
+        var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (!seen && !reduce) d.classList.add("has-portal", "is-sealed");
+      })();
+    </script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=UnifrakturMaguntia&display=swap"
       rel="stylesheet"
     />
+    <link rel="preload" as="image" href="img/hero.jpeg" />
     <link rel="stylesheet" href="style.css" />
     <script src="script.js" defer></script>
   </head>
 
   <body>
+    <!-- Ornament sprite, referenced with <use> throughout the page -->
+    <svg class="sprite" aria-hidden="true" focusable="false">
+      <symbol id="i-fleuron" viewBox="0 0 240 24">
+        <path d="M0 12h88M152 12h88" fill="none" stroke="currentColor" stroke-width=".8" />
+        <path d="M120 2.5c-6.5 5.2-6.5 13.8 0 19 6.5-5.2 6.5-13.8 0-19Z" fill="currentColor" />
+        <path d="M98 12c6.5-5.6 14-5.6 20 0-6 5.6-13.5 5.6-20 0ZM142 12c-6.5-5.6-14-5.6-20 0 6 5.6 13.5 5.6 20 0Z" fill="currentColor" opacity=".75" />
+        <circle cx="92" cy="12" r="1.8" fill="currentColor" />
+        <circle cx="148" cy="12" r="1.8" fill="currentColor" />
+      </symbol>
+      <symbol id="i-corner" viewBox="0 0 48 48">
+        <path d="M2 46V18C2 9 9 2 18 2h28" fill="none" stroke="currentColor" stroke-width="1.2" />
+        <path d="M8 46V22c0-8 6-14 14-14h24" fill="none" stroke="currentColor" stroke-width=".6" />
+        <path d="M14 14c4-1 7 1 7 5-4 1-7-1-7-5Z" fill="currentColor" />
+      </symbol>
+      <symbol id="i-star" viewBox="0 0 20 20">
+        <path d="M10 0c.8 5.2 4.8 9.2 10 10-5.2.8-9.2 4.8-10 10-.8-5.2-4.8-9.2-10-10 5.2-.8 9.2-4.8 10-10Z" fill="currentColor" />
+      </symbol>
+      <symbol id="i-bell" viewBox="0 0 24 24">
+        <path d="M12 3.2c-3.6 0-5.8 2.7-5.8 6.3v3.7L4.4 16.6h15.2l-1.8-3.4V9.5c0-3.6-2.2-6.3-5.8-6.3Z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
+        <path d="M12 1.6v1.6M9.6 18.6a2.4 2.4 0 0 0 4.8 0" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+      </symbol>
+      <symbol id="i-candle" viewBox="0 0 24 24">
+        <path d="M12 2.2c1.9 2.2 2.4 3.7 2.4 4.8a2.4 2.4 0 0 1-4.8 0c0-1.1.5-2.6 2.4-4.8Z" fill="currentColor" />
+        <path d="M9 10.5h6v10H9zM6.5 21.5h11" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round" />
+      </symbol>
+      <symbol id="i-sun" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.4" />
+        <path d="M12 2v2.6M12 19.4V22M2 12h2.6M19.4 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+      </symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24">
+        <path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="i-close" viewBox="0 0 24 24">
+        <path d="M5 5l14 14M19 5 5 19" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+      </symbol>
+    </svg>
+
+    <!-- Intro: two cathedral doors held shut by a wax seal -->
+    <div class="portal" data-portal aria-hidden="true">
+      <div class="portal__door portal__door--left">
+        <span class="seal portal__seal"><b>S</b><i>✦</i><b>M</b></span>
+      </div>
+      <div class="portal__door portal__door--right">
+        <span class="seal portal__seal"><b>S</b><i>✦</i><b>M</b></span>
+      </div>
+      <p class="portal__title">Kimi ga Shinu made Koi wo Shitai</p>
+      <p class="portal__hint">Toque para romper o selo</p>
+    </div>
+
     <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
-    <div class="reading-progress" aria-hidden="true"><span></span></div>
+    <div class="reading-progress" aria-hidden="true"><span data-progress></span></div>
+    <div class="cursor" data-cursor aria-hidden="true"><span class="cursor__label" data-cursor-label></span></div>
 
     <header class="site-header" data-header>
       <a class="wordmark" href="#inicio" aria-label="Voltar ao início">
-        <span class="wordmark__monogram" aria-hidden="true">
-          <img src="img/coroa-flores.jpg" alt="" />
-        </span>
+        <span class="wordmark__seal seal" aria-hidden="true"><b>S</b><i>✦</i><b>M</b></span>
         <span class="wordmark__text">
           <strong>Kimi ga Shinu made</strong>
           <small>Koi wo Shitai</small>
         </span>
       </a>
 
-      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
-        <span>Menu</span>
-        <i aria-hidden="true"></i>
-      </button>
-
       <nav class="site-nav" id="site-nav" aria-label="Navegação principal">
-        <a href="#internato">O internato</a>
-        <a href="#personagens">Duas almas</a>
-        <a href="#contraste">A obra</a>
-        <a href="#galeria">Galeria</a>
+        <a href="#internato" data-chapter-link><span aria-hidden="true">I</span>O internato</a>
+        <a href="#personagens" data-chapter-link><span aria-hidden="true">II</span>Duas almas</a>
+        <a href="#encontro" data-chapter-link><span aria-hidden="true">III</span>O encontro</a>
+        <a href="#contraste" data-chapter-link><span aria-hidden="true">IV</span>A obra</a>
+        <a href="#galeria" data-chapter-link><span aria-hidden="true">V</span>Galeria</a>
       </nav>
+
+      <div class="site-tools">
+        <button class="tool-btn" type="button" data-bell aria-label="Tocar o sino da escola" title="Tocar o sino">
+          <svg aria-hidden="true"><use href="#i-bell" /></svg>
+        </button>
+        <button class="tool-btn" type="button" data-theme-toggle aria-pressed="false" aria-label="Acender as velas (modo noturno)" title="Dia / Noite">
+          <svg class="tool-btn__candle" aria-hidden="true"><use href="#i-candle" /></svg>
+          <svg class="tool-btn__sun" aria-hidden="true"><use href="#i-sun" /></svg>
+        </button>
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+          <span>Menu</span>
+          <i aria-hidden="true"></i>
+        </button>
+      </div>
     </header>
 
+    <nav class="rail" aria-label="Capítulos">
+      <ol>
+        <li><a href="#inicio" data-chapter-link><span class="rail__num">✦</span><span class="rail__label">Prólogo</span></a></li>
+        <li><a href="#internato" data-chapter-link><span class="rail__num">I</span><span class="rail__label">O internato</span></a></li>
+        <li><a href="#personagens" data-chapter-link><span class="rail__num">II</span><span class="rail__label">Duas almas</span></a></li>
+        <li><a href="#encontro" data-chapter-link><span class="rail__num">III</span><span class="rail__label">O encontro</span></a></li>
+        <li><a href="#contraste" data-chapter-link><span class="rail__num">IV</span><span class="rail__label">A obra</span></a></li>
+        <li><a href="#galeria" data-chapter-link><span class="rail__num">V</span><span class="rail__label">Galeria</span></a></li>
+      </ol>
+    </nav>
+
     <main id="conteudo">
-      <section class="hero" id="inicio" aria-labelledby="hero-title">
-        <div class="hero__ornament hero__ornament--left" aria-hidden="true"></div>
+      <!-- ============ PROLOGUS ============ -->
+      <section class="hero" id="inicio" aria-labelledby="hero-title" data-hero>
+        <canvas class="hero__petals" data-petals aria-hidden="true"></canvas>
 
-        <div class="hero__copy reveal">
-          <p class="eyebrow"><span>Fantasia sombria</span><span>Romance yuri</span><span>Drama</span></p>
+        <div class="hero__inner">
+          <div class="hero__copy">
+            <p class="kicker">
+              <span>Prologus</span>
+              <svg aria-hidden="true"><use href="#i-star" /></svg>
+              <span>Fantasia sombria · Romance · Drama</span>
+            </p>
 
-          <h1 id="hero-title">
-            <span>I Want to Love You</span>
-            <em>Till Your Dying Day</em>
-          </h1>
+            <h1 id="hero-title">
+              <span class="hero__line" data-split>I Want to Love You</span>
+              <em class="hero__line" data-split>Till Your Dying Day</em>
+            </h1>
 
-          <p class="hero__lead">
-            Num lugar que transformou crianças em armas, duas garotas descobrem que a ternura também pode ser uma forma de resistência.
-          </p>
+            <p class="hero__jp" lang="ja">君が死ぬまで恋をしたい</p>
 
-          <div class="hero__actions">
-            <a class="text-link" href="#internato">Entrar no internato <span aria-hidden="true">01</span></a>
-            <p>Uma história sobre o afeto que floresce onde ninguém deveria aprender a morrer.</p>
+            <svg class="fleuron hero__fleuron" aria-hidden="true"><use href="#i-fleuron" /></svg>
+
+            <p class="hero__lead">
+              Num lugar que transformou crianças em armas, duas garotas descobrem que a ternura também pode ser uma forma de resistência.
+            </p>
+
+            <div class="hero__actions">
+              <a class="btn btn--primary" href="#internato">
+                Entrar no internato
+                <svg aria-hidden="true"><use href="#i-arrow" /></svg>
+              </a>
+              <a class="btn btn--ghost" href="#personagens">Conhecer as duas almas</a>
+            </div>
+          </div>
+
+          <div class="hero__visual">
+            <figure class="arch arch--hero" data-parallax="0.08">
+              <div class="arch__window arch__window--paper">
+                <img src="img/hero.jpeg" alt="Ilustração de Sheena e Mimi abraçadas, sorrindo" data-slot-image />
+              </div>
+            </figure>
+
+            <div class="medallion" aria-hidden="true" data-medallion>
+              <svg viewBox="0 0 200 200">
+                <defs>
+                  <path id="medallion-path" d="M100 100m-78 0a78 78 0 1 1 156 0a78 78 0 1 1-156 0" />
+                </defs>
+                <text>
+                  <textPath href="#medallion-path" textLength="486" lengthAdjust="spacing">AMOR VINCIT OMNIA ✦ MEMENTO MORI ✦ SCHOLA · BELLUM ✦ </textPath>
+                </text>
+              </svg>
+              <span class="seal medallion__seal"><b>S</b><i>✦</i><b>M</b></span>
+            </div>
+
+            <blockquote class="hero__quote">
+              “Até que a morte nos alcance,<br />quero aprender a ficar.”
+            </blockquote>
           </div>
         </div>
 
-        <div class="hero__visual reveal" data-delay="160">
-          <div class="hero__folio" aria-hidden="true">
-            <span>PRÓLOGO</span>
-            <span>NOITE</span>
-          </div>
-
-          <figure class="media-slot media-slot--hero" data-image-slot>
-            <img src="img/hero.jpeg" alt="Sheena e Mimi no cenário do internato" data-slot-image />
-            <figcaption class="media-placeholder">
-              <span class="media-placeholder__index">Imagem principal</span>
-              <strong>Sheena &amp; Mimi</strong>
-              <small>Adicione sua imagem em<br /><b>img/hero.webp</b></small>
-            </figcaption>
-          </figure>
-
-          <blockquote>
-            “Até que a morte nos alcance,<br />quero aprender a ficar.”
-          </blockquote>
-        </div>
-
-        <p class="hero__side-note" aria-hidden="true">Entre o sino da aula e o chamado para a guerra</p>
+        <a class="scroll-cue" href="#internato" aria-label="Rolar para o primeiro capítulo">
+          <span>Desça</span>
+          <i aria-hidden="true"></i>
+        </a>
       </section>
 
-      <div class="threshold" aria-label="Os dois lados da vida no internato">
-        <p>Aulas</p>
-        <span aria-hidden="true"></span>
-        <p>Dormitórios</p>
-        <span aria-hidden="true"></span>
-        <p>Missões</p>
-        <span aria-hidden="true"></span>
-        <p>Despedidas</p>
+      <!-- Banner ribbon that drifts faster as you scroll -->
+      <div class="ribbon" aria-label="Aulas, dormitórios, missões e despedidas">
+        <div class="ribbon__track" data-marquee aria-hidden="true">
+          <div class="ribbon__group">
+            <span>Aulas</span><svg><use href="#i-star" /></svg>
+            <span>Dormitórios</span><svg><use href="#i-star" /></svg>
+            <span>Missões</span><svg><use href="#i-star" /></svg>
+            <span>Despedidas</span><svg><use href="#i-star" /></svg>
+            <span lang="la" class="ribbon__latin">Memento mori</span><svg><use href="#i-star" /></svg>
+            <span lang="la" class="ribbon__latin">Amor vincit omnia</span><svg><use href="#i-star" /></svg>
+          </div>
+        </div>
       </div>
 
-      <section class="world section-pad" id="internato" aria-labelledby="world-title">
-        <div class="section-heading reveal">
-          <p class="chapter">Capítulo 01 <span>O internato</span></p>
+      <!-- ============ CAPITULUM I ============ -->
+      <section class="world section" id="internato" aria-labelledby="world-title">
+        <header class="section-head reveal">
+          <span class="section-head__numeral" aria-hidden="true">I</span>
+          <p class="section-head__label"><span lang="la">Capitulum Primum</span><span>O internato</span></p>
           <h2 id="world-title">Um lugar belo.<br /><em>Algo profundamente errado.</em></h2>
-        </div>
+        </header>
 
         <div class="world__layout">
-          <figure class="media-slot media-slot--world reveal" data-image-slot>
-            <img src="img/internato.jpeg" alt="O antigo internato onde a história acontece" data-slot-image />
-            <figcaption class="media-placeholder">
-              <span class="media-placeholder__index">Cenário</span>
-              <strong>O antigo internato</strong>
-              <small>Adicione sua imagem em<br /><b>img/internato.webp</b></small>
-            </figcaption>
+          <figure class="plate world__plate reveal-mask" data-parallax="0.06">
+            <div class="plate__window">
+              <img src="img/internato.jpeg" alt="O antigo internato de pedra, cercado por pinheiros, sob um céu claro" loading="lazy" data-slot-image />
+            </div>
+            <svg class="plate__corner plate__corner--tl" aria-hidden="true"><use href="#i-corner" /></svg>
+            <svg class="plate__corner plate__corner--tr" aria-hidden="true"><use href="#i-corner" /></svg>
+            <svg class="plate__corner plate__corner--bl" aria-hidden="true"><use href="#i-corner" /></svg>
+            <svg class="plate__corner plate__corner--br" aria-hidden="true"><use href="#i-corner" /></svg>
+            <figcaption><span>Tabula I</span> A escola que acolhe meninas sem família</figcaption>
           </figure>
 
           <div class="world__story reveal" data-delay="100">
@@ -127,219 +241,295 @@
               Nesse cotidiano, exercícios, amizades e pequenos afetos convivem com a possibilidade constante da morte. A guerra não interrompe a infância — ela foi incorporada a ela.
             </p>
 
-            <dl class="world__facts">
+            <dl class="ledger">
               <div>
-                <dt>Natureza</dt>
+                <dt><span aria-hidden="true">i.</span> Natureza</dt>
                 <dd>Fantasia sombria</dd>
               </div>
               <div>
-                <dt>Atmosfera</dt>
+                <dt><span aria-hidden="true">ii.</span> Atmosfera</dt>
                 <dd>Delicada e melancólica</dd>
               </div>
               <div>
-                <dt>Conflito</dt>
+                <dt><span aria-hidden="true">iii.</span> Conflito</dt>
                 <dd>Afeto diante da perda</dd>
               </div>
             </dl>
           </div>
 
-          <aside class="world__aside reveal" data-delay="180">
-            <figure class="world__portrait">
-              <img src="img/fran.jpg" alt="Retrato de Fran" />
+          <aside class="cameo reveal" data-delay="180">
+            <figure class="cameo__frame">
+              <img src="img/fran.jpg" alt="Retrato de Fran" loading="lazy" data-slot-image />
             </figure>
-            <p>"O que deveria ser abrigo também é arsenal."</p>
+            <p>“O que deveria ser abrigo também é arsenal.”</p>
             <span>A normalidade é a primeira ilusão deste lugar.</span>
           </aside>
         </div>
       </section>
 
-      <section class="characters" id="personagens" aria-labelledby="characters-title">
-        <header class="characters__intro section-pad reveal">
-          <p class="chapter">Capítulo 02 <span>Duas almas</span></p>
+      <!-- ============ CAPITULUM II ============ -->
+      <section class="souls section" id="personagens" aria-labelledby="characters-title">
+        <header class="section-head section-head--center reveal">
+          <span class="section-head__numeral" aria-hidden="true">II</span>
+          <p class="section-head__label"><span lang="la">Capitulum Secundum</span><span>Duas almas</span></p>
           <h2 id="characters-title">Duas maneiras de<br /><em>permanecer humana.</em></h2>
-          <p>
+          <p class="section-head__lead">
             Uma ainda se assusta com o horror. A outra atravessa o horror sorrindo. É no espaço entre as duas que a história encontra sua luz mais frágil.
           </p>
         </header>
 
-        <article class="character character--sheena" id="sheena">
-          <div class="character__number" aria-hidden="true">S</div>
+        <article class="soul soul--sheena" id="sheena" aria-labelledby="sheena-title">
+          <div class="soul__portrait reveal" data-tilt>
+            <div class="arch soul__arch">
+              <div class="arch__window">
+                <img src="img/sheena.jpg" alt="Totsuki Sheena" loading="lazy" data-slot-image />
+                <span class="soul__glare" aria-hidden="true"></span>
+              </div>
+            </div>
+            <span class="soul__initial" aria-hidden="true">S</span>
+          </div>
 
-          <div class="character__copy reveal">
-            <p class="character__overline">Totsuki Sheena <span>14 anos</span></p>
-            <h3>A garota que ainda<br />não se acostumou.</h3>
+          <div class="soul__copy reveal" data-delay="120">
+            <p class="soul__overline">Totsuki Sheena <span>14 anos</span></p>
+            <h3 id="sheena-title">A garota que ainda<br />não se acostumou.</h3>
             <p>
               Sheena deseja, acima de tudo, uma vida tranquila. Sensível, cautelosa e gentil, ela não consegue aceitar a naturalidade com que a escola trata a guerra — e parece deslocada justamente porque ainda reage ao que há de desumano ao seu redor.
             </p>
             <blockquote>
               Sua hesitação não é fraqueza. É a prova de que o horror ainda não conseguiu se tornar normal.
             </blockquote>
-            <ul aria-label="Traços de Sheena">
+            <ul class="virtues" aria-label="Traços de Sheena">
               <li>Sensível</li>
               <li>Reflexiva</li>
               <li>Humana</li>
             </ul>
           </div>
-
-          <figure class="media-slot media-slot--character reveal" data-delay="120" data-image-slot>
-            <img src="img/sheena.jpg" alt="Totsuki Sheena" data-slot-image />
-            <figcaption class="media-placeholder">
-              <span class="media-placeholder__index">Personagem 01</span>
-              <strong>Totsuki Sheena</strong>
-              <small>Adicione sua imagem em<br /><b>img/sheena.webp</b></small>
-            </figcaption>
-          </figure>
-
-          <p class="character__vertical" aria-hidden="true">A delicadeza de quem ainda teme perder</p>
         </article>
 
-        <article class="character character--mimi" id="mimi">
-          <div class="character__number" aria-hidden="true">M</div>
+        <div class="souls__join" aria-hidden="true">
+          <span></span>
+          <b>&amp;</b>
+          <span></span>
+        </div>
 
-          <figure class="media-slot media-slot--character reveal" data-image-slot>
-            <img src="img/mimi.jpg" alt="Kagari Mimi" data-slot-image />
-            <figcaption class="media-placeholder">
-              <span class="media-placeholder__index">Personagem 02</span>
-              <strong>Kagari Mimi</strong>
-              <small>Adicione sua imagem em<br /><b>img/mimi.webp</b></small>
-            </figcaption>
-          </figure>
+        <article class="soul soul--mimi" id="mimi" aria-labelledby="mimi-title">
+          <div class="soul__portrait reveal" data-tilt>
+            <div class="arch soul__arch">
+              <div class="arch__window">
+                <img src="img/mimi.jpg" alt="Kagari Mimi" loading="lazy" data-slot-image />
+                <span class="soul__glare" aria-hidden="true"></span>
+              </div>
+            </div>
+            <span class="soul__initial" aria-hidden="true">M</span>
+          </div>
 
-          <div class="character__copy reveal" data-delay="120">
-            <p class="character__overline">Kagari Mimi <span>Arma secreta</span></p>
-            <h3>A luz que chega<br />coberta de sangue.</h3>
+          <div class="soul__copy reveal" data-delay="120">
+            <p class="soul__overline">Kagari Mimi <span>Arma secreta</span></p>
+            <h3 id="mimi-title">A luz que chega<br />coberta de sangue.</h3>
             <p>
               Pequena, alegre e espontânea, Mimi surge diante de Sheena com uma doçura quase incompatível com aquele mundo. Por trás da aparência adorável, porém, existe uma capacidade de combate tão extraordinária que a escola a chama de sua arma secreta.
             </p>
             <blockquote>
               Ela ilumina cada encontro — mas há sempre um mistério sombrio vivendo atrás de seu sorriso.
             </blockquote>
-            <ul aria-label="Traços de Mimi">
+            <ul class="virtues" aria-label="Traços de Mimi">
               <li>Luminosa</li>
               <li>Imprevisível</li>
               <li>Misteriosa</li>
             </ul>
           </div>
-
-          <p class="character__vertical" aria-hidden="true">A ternura de quem aprendeu a lutar</p>
         </article>
       </section>
 
-      <section class="encounter section-pad" aria-labelledby="encounter-title">
-        <div class="encounter__label reveal">
-          <p class="chapter">O encontro <span>Durante uma noite</span></p>
-          <p class="encounter__count">02:17</p>
-          <small>Corredores silenciosos<br />Luzes ainda acesas</small>
-        </div>
+      <!-- ============ CAPITULUM III ============ -->
+      <section class="encounter" id="encontro" aria-labelledby="encounter-title" data-candlelight>
+        <div class="encounter__inner section">
+          <div class="encounter__clock reveal" data-clock>
+            <svg viewBox="0 0 200 200" aria-hidden="true">
+              <circle class="clock__rim" cx="100" cy="100" r="96" />
+              <circle class="clock__rim clock__rim--inner" cx="100" cy="100" r="88" />
+              <g data-clock-face></g>
+              <line class="clock__hand clock__hand--hour" x1="100" y1="106" x2="100" y2="56" />
+              <line class="clock__hand clock__hand--minute" x1="100" y1="110" x2="100" y2="30" />
+              <line class="clock__hand clock__hand--second" x1="100" y1="114" x2="100" y2="24" />
+              <circle class="clock__pin" cx="100" cy="100" r="4" />
+            </svg>
+            <p class="encounter__time"><span>02:17</span><small lang="la">Hora secunda noctis</small></p>
+            <small class="encounter__where">Corredores silenciosos · Luzes ainda acesas</small>
+          </div>
 
-        <div class="encounter__copy reveal" data-delay="80">
-          <h2 id="encounter-title">E então, em plena noite,<br /><em>Sheena encontra Mimi.</em></h2>
-          <p>
-            Uma pequena garota coberta de sangue. Um sorriso onde deveria haver medo. O encontro torna-se o ponto de ruptura que começa a modificar a maneira como Sheena enxerga a escola, a morte e a possibilidade de se apegar a alguém.
-          </p>
-        </div>
+          <div class="encounter__copy reveal" data-delay="100">
+            <p class="section-head__label"><span lang="la">Capitulum Tertium</span><span>O encontro</span></p>
+            <h2 id="encounter-title">E então, em plena noite,<br /><em>Sheena encontra Mimi.</em></h2>
+            <p>
+              Uma pequena garota coberta de sangue. Um sorriso onde deveria haver medo. O encontro torna-se o ponto de ruptura que começa a modificar a maneira como Sheena enxerga a escola, a morte e a possibilidade de se apegar a alguém.
+            </p>
+          </div>
 
-        <div class="encounter__line" aria-hidden="true">
-          <span>Sheena</span><i></i><span>Mimi</span>
+          <div class="thread" data-thread aria-hidden="true">
+            <span class="thread__name thread__name--sheena">Sheena</span>
+            <svg viewBox="0 0 600 80" preserveAspectRatio="none">
+              <path d="M4 40 C 120 -10, 200 90, 300 40 S 480 -10, 596 40" pathLength="1" data-thread-path />
+            </svg>
+            <span class="thread__name thread__name--mimi">Mimi</span>
+          </div>
         </div>
+        <p class="encounter__hint" aria-hidden="true">Mova a vela pelo corredor</p>
       </section>
 
-      <section class="contrast" id="contraste" aria-labelledby="contrast-title">
-        <div class="contrast__image reveal">
-          <figure class="media-slot media-slot--contrast" data-image-slot>
-            <img src="img/encontro.jpeg" alt="O encontro de Sheena e Mimi durante a noite" data-slot-image />
-            <figcaption class="media-placeholder">
-              <span class="media-placeholder__index">Cena central</span>
-              <strong>O encontro na noite</strong>
-              <small>Adicione sua imagem em<br /><b>img/encontro.webp</b></small>
-            </figcaption>
+      <!-- ============ CAPITULUM IV ============ -->
+      <section class="contrast section" id="contraste" aria-labelledby="contrast-title">
+        <div class="contrast__media">
+          <figure class="arch contrast__arch reveal-mask" data-parallax="0.05">
+            <div class="arch__window">
+              <img src="img/encontro.jpeg" alt="Mimi, coberta de sangue, e Sheena sentadas na escadaria de pedra durante a noite" loading="lazy" data-slot-image />
+            </div>
+            <figcaption><span>Tabula II</span> O encontro na escadaria</figcaption>
           </figure>
         </div>
 
-        <div class="contrast__content section-pad reveal" data-delay="120">
-          <p class="chapter">Capítulo 03 <span>A linguagem da obra</span></p>
-          <h2 id="contrast-title">A inocência torna a violência<br /><em>impossível de ignorar.</em></h2>
-          <p>
+        <div class="contrast__content">
+          <header class="section-head reveal">
+            <span class="section-head__numeral" aria-hidden="true">IV</span>
+            <p class="section-head__label"><span lang="la">Capitulum Quartum</span><span>A linguagem da obra</span></p>
+            <h2 id="contrast-title">A inocência torna a violência<br /><em>impossível de ignorar.</em></h2>
+          </header>
+
+          <svg class="blood-line reveal" viewBox="0 0 400 40" aria-hidden="true" preserveAspectRatio="none">
+            <path d="M0 8 H400" pathLength="1" />
+            <path class="blood-line__drip" d="M120 8 V30" pathLength="1" />
+            <path class="blood-line__drip blood-line__drip--late" d="M268 8 V20" pathLength="1" />
+          </svg>
+
+          <p class="contrast__text reveal">
             A beleza do anime existe em tensão constante. Uniformes formais, jardins, dormitórios e céu aberto criam o aconchego de um antigo internato europeu. Então o sangue aparece — agressivo, inevitável — rompendo a suavidade da cena.
           </p>
 
-          <div class="contrast__motifs">
-            <article>
-              <span>01</span>
-              <h3>O cotidiano</h3>
-              <p>Aulas, refeições e amizades constroem a sensação de uma infância possível.</p>
-            </article>
-            <article>
-              <span>02</span>
-              <h3>A ruptura</h3>
-              <p>O combate devolve cada garota ao destino que a escola escolheu para ela.</p>
-            </article>
-            <article>
-              <span>03</span>
-              <h3>O vínculo</h3>
-              <p>Sheena e Mimi fazem do afeto um abrigo pequeno, imperfeito e essencial.</p>
-            </article>
-          </div>
+          <ol class="motifs">
+            <li class="motif reveal">
+              <span class="motif__num" aria-hidden="true">I</span>
+              <div>
+                <h3>O cotidiano</h3>
+                <p>Aulas, refeições e amizades constroem a sensação de uma infância possível.</p>
+              </div>
+            </li>
+            <li class="motif reveal" data-delay="90">
+              <span class="motif__num" aria-hidden="true">II</span>
+              <div>
+                <h3>A ruptura</h3>
+                <p>O combate devolve cada garota ao destino que a escola escolheu para ela.</p>
+              </div>
+            </li>
+            <li class="motif reveal" data-delay="180">
+              <span class="motif__num" aria-hidden="true">III</span>
+              <div>
+                <h3>O vínculo</h3>
+                <p>Sheena e Mimi fazem do afeto um abrigo pequeno, imperfeito e essencial.</p>
+              </div>
+            </li>
+          </ol>
         </div>
       </section>
 
-      <section class="quote-section section-pad" aria-label="Essência da história">
-        <p class="quote-section__kicker reveal">No fim, esta não é apenas uma história sobre morrer.</p>
-        <blockquote class="reveal" data-delay="80">
-          É uma história sobre encontrar<br />alguém por quem vale a pena<br /><em>continuar delicada.</em>
+      <!-- Scroll-inked quotation -->
+      <section class="verse section" aria-label="Essência da história" data-ink-section>
+        <svg class="fleuron verse__fleuron" aria-hidden="true"><use href="#i-fleuron" /></svg>
+        <p class="verse__kicker reveal">No fim, esta não é apenas uma história sobre morrer.</p>
+        <blockquote class="verse__quote" data-ink>
+          É uma história sobre encontrar alguém por quem vale a pena <em>continuar delicada.</em>
         </blockquote>
-        <p class="quote-section__note reveal" data-delay="150">
-          Romance, inocência e perda — três coisas tentando existir no mesmo lugar.
-        </p>
+        <p class="verse__note reveal">Romance, inocência e perda — três coisas tentando existir no mesmo lugar.</p>
       </section>
 
-      <section class="gallery section-pad" id="galeria" aria-labelledby="gallery-title">
-        <div class="gallery__heading reveal">
-          <p class="chapter">Arquivo visual <span>Espaços para suas imagens</span></p>
-          <h2 id="gallery-title">Fragmentos de uma<br /><em>paz emprestada.</em></h2>
-          <p>
-            Insira cenas de respiro: os jardins, os dormitórios, os corredores e aqueles instantes em que o mundo parece esquecer a guerra.
-          </p>
-        </div>
+      <!-- ============ CAPITULUM V ============ -->
+      <section class="gallery" id="galeria" aria-labelledby="gallery-title" data-gallery>
+        <div class="gallery__sticky">
+          <header class="gallery__head">
+            <div class="section-head">
+              <span class="section-head__numeral" aria-hidden="true">V</span>
+              <p class="section-head__label"><span lang="la">Capitulum Quintum</span><span>Arquivo visual</span></p>
+              <h2 id="gallery-title">Fragmentos de uma <em>paz emprestada.</em></h2>
+            </div>
+            <div class="gallery__meta">
+              <p>Os jardins, os dormitórios, os corredores — e aqueles instantes em que o mundo parece esquecer a guerra. Toque em uma tela para ampliá-la.</p>
+              <div class="gallery__progress" aria-hidden="true">
+                <span class="gallery__count" data-gallery-count>I / V</span>
+                <span class="gallery__bar"><i data-gallery-bar></i></span>
+              </div>
+            </div>
+          </header>
 
-        <div class="gallery__grid">
-          <figure class="media-slot media-slot--gallery gallery__item--a reveal" data-image-slot>
-            <img src="img/jardim.webp" alt="Jardim do internato" data-slot-image />
-            <figcaption class="media-placeholder">
-              <span class="media-placeholder__index">Arquivo 01</span>
-              <strong>O jardim</strong>
-              <small>img/galeria-jardim.webp</small>
-            </figcaption>
-          </figure>
-
-          <figure class="media-slot media-slot--gallery gallery__item--b reveal" data-delay="90" data-image-slot>
-            <img src="img/duo.webp" alt="Dormitório das garotas" data-slot-image />
-            <figcaption class="media-placeholder">
-              <span class="media-placeholder__index">Arquivo 02</span>
-              <strong>O dormitório</strong>
-              <small>img/galeria-dormitorio.webp</small>
-            </figcaption>
-          </figure>
-
-          <figure class="media-slot media-slot--gallery gallery__item--c reveal" data-delay="140" data-image-slot>
-            <img src="img/paisagem.jpeg" alt="Corredor do internato à noite" data-slot-image />
-            <figcaption class="media-placeholder">
-              <span class="media-placeholder__index">Arquivo 03</span>
-              <strong>Depois do sino</strong>
-              <small>img/galeria-corredor.webp</small>
-            </figcaption>
-          </figure>
+          <div class="gallery__viewport" data-gallery-viewport>
+            <ul class="gallery__track" data-gallery-track>
+              <li class="frame" style="--ratio: 2400 / 3394">
+                <button class="frame__button" type="button" data-gallery-item data-caption="O jardim — pétalas antes do sino" data-cursor-text="Ver">
+                  <img src="img/jardim.webp" alt="Quatro garotas de uniforme caminham por um campo de flores sob o céu azul" loading="lazy" data-slot-image />
+                </button>
+                <p class="frame__plaque"><span>Tabula I</span> O jardim</p>
+              </li>
+              <li class="frame" style="--ratio: 1200 / 844">
+                <button class="frame__button" type="button" data-gallery-item data-caption="O dormitório — um cobertor para duas" data-cursor-text="Ver">
+                  <img src="img/duo.webp" alt="Sheena e Mimi dormem sob o mesmo cobertor, ao lado de uma pilha de livros" loading="lazy" data-slot-image />
+                </button>
+                <p class="frame__plaque"><span>Tabula II</span> O dormitório</p>
+              </li>
+              <li class="frame" style="--ratio: 1920 / 1080">
+                <button class="frame__button" type="button" data-gallery-item data-caption="O mirante — a cidade acesa ao entardecer" data-cursor-text="Ver">
+                  <img src="img/paisagem.jpeg" alt="As garotas de casacos escuros observam uma cidade iluminada ao pôr do sol" loading="lazy" data-slot-image />
+                </button>
+                <p class="frame__plaque"><span>Tabula III</span> O mirante</p>
+              </li>
+              <li class="frame" style="--ratio: 838 / 1079">
+                <button class="frame__button" type="button" data-gallery-item data-caption="A escadaria — depois do sino" data-cursor-text="Ver">
+                  <img src="img/encontro.jpeg" alt="Mimi e Sheena sentadas na escadaria de pedra à noite" loading="lazy" data-slot-image />
+                </button>
+                <p class="frame__plaque"><span>Tabula IV</span> A escadaria</p>
+              </li>
+              <li class="frame" style="--ratio: 1600 / 899">
+                <button class="frame__button" type="button" data-gallery-item data-caption="A escola — pedra, pinheiros e silêncio" data-cursor-text="Ver">
+                  <img src="img/internato.jpeg" alt="Fachada do internato de pedra entre pinheiros" loading="lazy" data-slot-image />
+                </button>
+                <p class="frame__plaque"><span>Tabula V</span> A escola</p>
+              </li>
+            </ul>
+          </div>
         </div>
       </section>
     </main>
 
     <footer class="site-footer">
-      <div>
-        <p class="site-footer__title">I Want to Love You Till Your Dying Day</p>
-        <p>Kimi ga Shinu made Koi wo Shitai</p>
+      <div class="site-footer__wreath" aria-hidden="true">
+        <img src="img/coroa-flores.jpg" alt="" loading="lazy" />
+        <span class="seal"><b>S</b><i>✦</i><b>M</b></span>
       </div>
-      <p class="site-footer__closing">Uma história de amor à sombra da guerra.</p>
-      <a href="#inicio">Voltar ao início <span aria-hidden="true">↑</span></a>
+      <p class="site-footer__explicit" lang="la">Explicit</p>
+      <p class="site-footer__title">I Want to Love You Till Your Dying Day</p>
+      <p class="site-footer__sub">Kimi ga Shinu made Koi wo Shitai · Uma história de amor à sombra da guerra.</p>
+      <svg class="fleuron" aria-hidden="true"><use href="#i-fleuron" /></svg>
+      <a class="site-footer__top" href="#inicio">Voltar ao prólogo <span aria-hidden="true">↑</span></a>
     </footer>
+
+    <a class="seal-top" href="#inicio" data-seal-top aria-label="Voltar ao topo">
+      <span class="seal"><b>↑</b></span>
+    </a>
+
+    <dialog class="lightbox" data-lightbox aria-label="Galeria ampliada">
+      <figure class="lightbox__figure">
+        <img src="" alt="" data-lightbox-img />
+        <figcaption>
+          <span data-lightbox-count>I / V</span>
+          <strong data-lightbox-caption></strong>
+        </figcaption>
+      </figure>
+      <button class="lightbox__btn lightbox__btn--prev" type="button" data-lightbox-prev aria-label="Imagem anterior">
+        <svg aria-hidden="true"><use href="#i-arrow" /></svg>
+      </button>
+      <button class="lightbox__btn lightbox__btn--next" type="button" data-lightbox-next aria-label="Próxima imagem">
+        <svg aria-hidden="true"><use href="#i-arrow" /></svg>
+      </button>
+      <button class="lightbox__btn lightbox__btn--close" type="button" data-lightbox-close aria-label="Fechar galeria">
+        <svg aria-hidden="true"><use href="#i-close" /></svg>
+      </button>
+    </dialog>
   </body>
 </html>
